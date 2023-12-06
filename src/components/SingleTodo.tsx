@@ -1,10 +1,19 @@
 import React from 'react'
 
-const SingleTodo: React.FC = () => {
+import { Todo } from '../models'
+
+type Props = {
+    todo: Todo;
+    key: Todo["id"];
+    todos: Todo[];
+    setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+}
+
+const SingleTodo: React.FC<Props> = ({todo, key, todos , setTodos}) => {
   return (
-    <div>
-        SingleTodo
-    </div>
+    <form className='todo__single'> 
+        <span className='todo__single--text'>{todo.todo}</span>
+    </form>
   )
 }
 
