@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {DragDropContext} from 'react-beautiful-dnd'
+import React, { useEffect, useState } from 'react';
+import {DragDropContext, DropResult} from 'react-beautiful-dnd'
 
 import './App.css';
 import InputField from './components/InputField';
@@ -21,9 +21,52 @@ const App: React.FC = () => {
       setTodo("");
     }
   }
-  console.log(todos)
+  
+  const onDragEnd = (result: DropResult) =>{
+    console.log(result);
+
+    const { source , destination } = result;
+
+    if(!destination) return;
+
+    if(source.droppableId === destination.droppableId && 
+      source.index === destination.index) return;
+
+    let add,
+        active = todos,
+        complete = completedTodos;
+
+        if(source.droppableId === 'TodosList'){
+          add = active[source.index]
+          active.splice(source.index, 1)
+        }
+        else{
+          add = active[source.index]
+          active.splice(source.index , 1)
+        }
+
+        if(destination.droppableId === "TodosList"){
+          if(add.isDone){
+            add.isDone = false;
+          }
+          active.splice(destination.index, 0 , add)
+          setTodos(active)
+        }
+        else{
+          if(!add.isDone){
+            add.isDone = true;
+          }
+          active.splice(destination.index, 0 , add)
+          setTodos(active)
+        }
+
+        
+    
+  }
+
+  
   return (
-    <DragDropContext onDragEnd={()=>{}}>
+    <DragDropContext onDragEnd={onDragEnd}>
       <div className="App">
         <span className='heading'>Taskify</span>
         <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
